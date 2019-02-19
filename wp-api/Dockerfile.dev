@@ -1,0 +1,38 @@
+FROM php:7.3-apache
+
+ENV APACHE_RUN_USER=daemon
+WORKDIR /var/www/html/wordpress
+
+COPY ./wait-for-it.sh ./
+RUN chmod +x ./wait-for-it.sh
+
+RUN apt-get update -y \
+  && apt-get install -y libpng-dev libmagickwand-dev \
+  && apt-get install -y sendmail mysql-client
+
+# PHP
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install gd # Needs libpng-dev
+RUN docker-php-ext-install bcmath exif
+RUN pecl install imagick && docker-php-ext-enable imagick # Needs libmagickwand-dev
+
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+
+# Apache
+RUN a2enmod rewrite
+
+# Wordpress
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN php wp-cli.phar --info
+RUN chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
+RUN wp --info
+RUN chown -R $APACHE_RUN_USER:$APACHE_RUN_USER /usr/sbin
+RUN chown -R $APACHE_RUN_USER:$APACHE_RUN_USER /var/www/html/wordpress
+
+USER $APACHE_RUN_USER
+RUN wp core download --locale=ja
+RUN wp config create --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbhost=db --dbprefix=wp_ --dbcharset=utf8 --skip-check # Needs mysql-client
+
+EXPOSE 8080
+
+CMD ./wait-for-it.sh db:3306 -t 30 -- apache2-foreground

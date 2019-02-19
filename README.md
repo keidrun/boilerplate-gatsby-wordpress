@@ -1,2 +1,3 @@
 # boilerplate-gatsby-wordpress
- Boilerplate of Gatsby with WordPress
+
+Boilerplate of Gatsby with WordPress
