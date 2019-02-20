@@ -1,14 +1,29 @@
 FROM php:7.3-apache
 
-ENV APACHE_RUN_USER=daemon
+ARG APACHE_RUN_USER=www-data
+ARG WP_LOCALE=en_US
+ARG WP_DB_NAME=wordpress
+ARG WP_DB_USER=wordpress
+ARG WP_DB_PASS=wordpress
+ARG WP_DB_HOST=localhost
+ARG WP_DB_PORT=3306
+ARG WP_DB_PREFIX=wp_
+ARG WP_DB_CHARSET=utf8
+ENV CMD_DB_HOST=$WP_DB_HOST
+ENV CMD_DB_PORT=$WP_DB_PORT
+ENV CMD_DB_TIMEOUT_SEC=30
+
 WORKDIR /var/www/html/wordpress
 
 COPY ./wait-for-it.sh ./
 RUN chmod +x ./wait-for-it.sh
 
-RUN apt-get update -y \
-  && apt-get install -y libpng-dev libmagickwand-dev \
-  && apt-get install -y sendmail mysql-client
+RUN apt-get update -y && apt-get install -y \
+  libpng-dev \
+  libmagickwand-dev \
+  sendmail \
+  mysql-client \
+  vim
 
 # PHP
 RUN docker-php-ext-install mysqli
@@ -17,6 +32,8 @@ RUN docker-php-ext-install bcmath exif
 RUN pecl install imagick && docker-php-ext-enable imagick # Needs libmagickwand-dev
 
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+RUN chmod 666 /usr/local/etc/php/php.ini
+RUN sed -i '/^upload_max_filesize/s/[0-9]M/5M/g' /usr/local/etc/php/php.ini
 
 # Apache
 RUN a2enmod rewrite
@@ -30,9 +47,9 @@ RUN chown -R $APACHE_RUN_USER:$APACHE_RUN_USER /usr/sbin
 RUN chown -R $APACHE_RUN_USER:$APACHE_RUN_USER /var/www/html/wordpress
 
 USER $APACHE_RUN_USER
-RUN wp core download --locale=en_US
-RUN wp config create --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbhost=db --dbprefix=wp_ --dbcharset=utf8 --skip-check # Needs mysql-client
+RUN wp core download --locale=$WP_LOCALE
+RUN wp config create --dbname=$WP_DB_NAME --dbuser=$WP_DB_USER --dbpass=$WP_DB_PASS --dbhost=$WP_DB_HOST:$WP_DB_PORT --dbprefix=$WP_DB_PREFIX --dbcharset=$WP_DB_CHARSET --skip-check # Needs mysql-client
 
 EXPOSE 8080
 
-CMD ./wait-for-it.sh db:3306 -t 30 -- apache2-foreground
+CMD ./wait-for-it.sh $CMD_DB_HOST:$CMD_DB_PORT -t $CMD_DB_TIMEOUT_SEC -- apache2-foreground

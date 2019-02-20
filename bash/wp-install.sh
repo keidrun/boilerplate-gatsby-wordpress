@@ -12,3 +12,5 @@ docker exec api wp plugin install classic-editor --activate
 docker exec api wp plugin install health-check --activate
 docker exec api wp plugin install wp-api-menus --activate
 docker exec api wp plugin install jwt-authentication-for-wp-rest-api --activate
+docker exec api wp plugin install advanced-custom-fields --activate
+docker exec api wp plugin install acf-to-rest-api --activate
