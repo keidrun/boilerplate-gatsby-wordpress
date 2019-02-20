@@ -30,7 +30,7 @@ RUN chown -R $APACHE_RUN_USER:$APACHE_RUN_USER /usr/sbin
 RUN chown -R $APACHE_RUN_USER:$APACHE_RUN_USER /var/www/html/wordpress
 
 USER $APACHE_RUN_USER
-RUN wp core download --locale=ja
+RUN wp core download --locale=en_US
 RUN wp config create --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbhost=db --dbprefix=wp_ --dbcharset=utf8 --skip-check # Needs mysql-client
 
 EXPOSE 8080
