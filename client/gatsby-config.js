@@ -1,9 +1,7 @@
-require('dotenv').config({ path: '.env' });
-
 module.exports = {
   siteMetadata: {
-    title: `Boilerplate Gatsby With Wordpress`,
-    description: `Boilerplate of Gatsby with WordPress`,
+    title: `Boilerplate of Gatsby and WordPress REST API with JWT`,
+    description: `Boilerplate of Gatsby and WordPress REST API with JWT`,
     author: `@keidrun`,
   },
   plugins: [

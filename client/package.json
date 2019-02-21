@@ -1,6 +1,6 @@
 {
-  "name": "boilerplate-gatsby-wordpress",
-  "description": "Boilerplate of Gatsby with WordPress",
+  "name": "boilerplate-gatsby-wordpress-with-jwt",
+  "description": "Boilerplate of Gatsby and WordPress REST API with JWT",
   "version": "0.1.0",
   "author": "keidrun",
   "keywords": [
@@ -16,7 +16,7 @@
   "scripts": {
     "precommit": "lint-staged",
     "build": "gatsby build",
-    "develop": "gatsby develop",
+    "develop": "gatsby develop -H 0.0.0.0 -p 8000",
     "start": "npm run develop",
     "serve": "gatsby serve",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
@@ -24,7 +24,6 @@
   "main": "gatsby-browser.js",
   "dependencies": {
     "babel-plugin-styled-components": "^1.10.0",
-    "dotenv": "^6.2.0",
     "gatsby": "^2.1.11",
     "gatsby-image": "^2.0.29",
     "gatsby-plugin-manifest": "^2.0.18",

@@ -1,8 +1,0 @@
-npm-debug.log*
-node_modules/
-.npm
-.eslintcache
-.node_repl_history
-.cache/
-public
-.DS_Store
