@@ -14,7 +14,3 @@ docker exec api wp plugin install wp-api-menus --activate
 docker exec api wp plugin install jwt-authentication-for-wp-rest-api --activate
 docker exec api wp plugin install advanced-custom-fields --activate
 docker exec api wp plugin install acf-to-rest-api --activate
-
-# Set up JWT
-docker exec api wp config set JWT_AUTH_SECRET_KEY 'P}XTapir*f$&S@yd%r]+g~YNV6N|+I_Eo[~^9o+RX09e<#,g.cd:D<W#y;kV-~)z'
-docker exec api wp config set JWT_AUTH_CORS_ENABLE true --raw
